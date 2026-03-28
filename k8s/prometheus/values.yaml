@@ -1,0 +1,59 @@
+# Helm values for kube-prometheus-stack
+# Configures Prometheus, Grafana, Alertmanager, and node exporters
+# Install with: helm install prometheus prometheus-community/kube-prometheus-stack -f values.yaml -n monitoring
+
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+    externalLabels:
+      cluster: observeops-cluster
+
+grafana:
+  enabled: true
+  adminPassword: "ObserveOps2026!"  # CHANGE_THIS_TO_SOMETHING_STRONG_AND_UNIQUE or even better be sourced from Kubernetes Secrets or a vault like AWS Secrets Manager in production
+  persistence:
+    enabled: true
+    size: 10Gi
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://prometheus-operated:9090
+          access: proxy
+          isDefault: true
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    # Configure Alertmanager to watch for AlertmanagerConfig CRDs
+    alertmanagerConfigSelector:
+      matchLabels:
+        alertmanagerConfig: main
+    alertmanagerConfigNamespaceSelector: {}
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+prometheus-node-exporter:
+  hostNetwork: true
+  hostRootFsMount:
+    enabled: true
