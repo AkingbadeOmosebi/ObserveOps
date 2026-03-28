@@ -1,0 +1,57 @@
+# Jaeger service exposing UI and collection endpoints for distributed tracing
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+  namespace: tracing
+spec:
+  type: ClusterIP
+  selector:
+    app: jaeger
+  ports:
+    - name: jaeger-ui
+      port: 16686
+      targetPort: 16686
+    - name: jaeger-collector
+      port: 14268
+      targetPort: 14268
+    - name: jaeger-collector-grpc
+      port: 4317
+      targetPort: 4317
+
+---
+# All-in-one Jaeger deployment for trace collection and visualization
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  namespace: tracing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+        - name: jaeger
+          image: jaegertracing/all-in-one:1.38
+          ports:
+            - containerPort: 16686
+            - containerPort: 14268
+            - containerPort: 4317
+            - containerPort: 6831
+              protocol: UDP
+          env:
+            - name: COLLECTOR_ZIPKIN_HOST_PORT
+              value: ":9411"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
