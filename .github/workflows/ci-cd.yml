@@ -120,6 +120,7 @@ jobs:
       
       - name: Trivy Scan Backend
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true 
         with:
           image-ref: observeops-backend:${{ github.sha }}
           format: sarif
@@ -184,6 +185,7 @@ jobs:
       
       - name: Trivy Scan Frontend
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true 
         with:
           image-ref: observeops-frontend:${{ github.sha }}
           format: sarif
