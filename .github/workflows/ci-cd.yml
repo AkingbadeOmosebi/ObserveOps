@@ -64,13 +64,13 @@ jobs:
             --scan app/frontend
             --exclude node_modules
             --failOnCVSS 7.0
-
       
-      - name: Upload OWASP Results
+      - name: Upload OWASP HTML Report
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: actions/upload-artifact@v4
         with:
-          sarif_file: reports/dependency-check-report.sarif
+          name: owasp-dependency-check-report
+          path: reports/
       
       # ============ SNYK SCANNING ============
       
