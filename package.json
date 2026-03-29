@@ -1,0 +1,40 @@
+{
+  "name": "observeops",
+  "version": "1.1.1",
+  "description": "Full-stack observability platform for payment processing with distributed tracing",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AkingbadeOmosebi/ObserveOps.git"
+  },
+  "author": "Akingbade Omosebi <akingbadeomosebi@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "release": "semantic-release"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^11.0.2",
+    "@semantic-release/release-notes-generator": "^12.1.0",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "semantic-release": "^23.0.0"
+  },
+  "keywords": [
+    "observability",
+    "opentelemetry",
+    "prometheus",
+    "grafana",
+    "jaeger",
+    "elasticsearch",
+    "kubernetes",
+    "eks",
+    "devops",
+    "sre",
+    "monitoring",
+    "distributed-tracing",
+    "payment-platform"
+  ]
+}
