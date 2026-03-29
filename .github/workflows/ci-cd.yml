@@ -17,6 +17,8 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_BACKEND: ghcr.io/akingbadeomosebi/observeops-backend
+  IMAGE_FRONTEND: ghcr.io/akingbadeomosebi/observeops-frontend
 
 jobs:
   security-scan:
@@ -219,6 +221,10 @@ jobs:
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
+
+      - name: Sign Frontend Image
+        run: |
+          cosign sign --yes ${{ env.IMAGE_FRONTEND }}@${{ steps.push-frontend.outputs.digest }}
       
       - name: Sign Frontend Image
         env:
