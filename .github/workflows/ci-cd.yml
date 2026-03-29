@@ -48,6 +48,7 @@ jobs:
             -Dsonar.organization=akingbadeomosebi
             -Dsonar.sources=app/backend,app/frontend/src
             -Dsonar.exclusions=**/node_modules/**,**/*.test.js
+            -Dsonar.scanner.skip=false
       
       # ============ DEPENDENCY SCANNING ============
       
@@ -56,7 +57,7 @@ jobs:
         with:
           project: 'ObserveOps'
           path: '.'
-          format: 'SARIF'
+          format: 'HTML'
           args: >
             --enableRetired
             --scan app/backend
