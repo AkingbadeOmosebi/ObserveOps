@@ -122,19 +122,9 @@ jobs:
       
       - name: Trivy Scan Backend
         uses: aquasecurity/trivy-action@master
-        continue-on-error: true 
         with:
           image-ref: observeops-backend:${{ github.sha }}
-          format: sarif
-          output: trivy-backend.sarif
           severity: HIGH,CRITICAL
-          exit-code: 1
-      
-      - name: Upload Backend Scan Results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-backend.sarif
       
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -147,7 +137,7 @@ jobs:
         id: meta-backend
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/observeops-backend
+          images: ${{ env.IMAGE_BACKEND }}
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -168,11 +158,8 @@ jobs:
         uses: sigstore/cosign-installer@v3
       
       - name: Sign Backend Image
-        env:
-          DIGEST: ${{ steps.push-backend.outputs.digest }}
         run: |
-          cosign sign --yes \
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/observeops-backend@${DIGEST}
+          cosign sign --yes ${{ env.IMAGE_BACKEND }}@${{ steps.push-backend.outputs.digest }}
       
       # ============ FRONTEND ============
       
@@ -187,25 +174,15 @@ jobs:
       
       - name: Trivy Scan Frontend
         uses: aquasecurity/trivy-action@master
-        continue-on-error: true 
         with:
           image-ref: observeops-frontend:${{ github.sha }}
-          format: sarif
-          output: trivy-frontend.sarif
           severity: HIGH,CRITICAL
-          exit-code: 1
-      
-      - name: Upload Frontend Scan Results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-frontend.sarif
       
       - name: Frontend Metadata
         id: meta-frontend
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/observeops-frontend
+          images: ${{ env.IMAGE_FRONTEND }}
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -221,17 +198,10 @@ jobs:
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
-
+      
       - name: Sign Frontend Image
         run: |
           cosign sign --yes ${{ env.IMAGE_FRONTEND }}@${{ steps.push-frontend.outputs.digest }}
-      
-      - name: Sign Frontend Image
-        env:
-          DIGEST: ${{ steps.push-frontend.outputs.digest }}
-        run: |
-          cosign sign --yes \
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/observeops-frontend@${DIGEST}
 
   semantic-release:
     name: Semantic Release
