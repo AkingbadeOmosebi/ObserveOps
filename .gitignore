@@ -28,3 +28,6 @@ logs/
 
 # Secrets - never commit actual secrets, use .example files
 k8s/prometheus/alertmanager-email-secret.yaml
+
+#shell scripts
+*.sh
