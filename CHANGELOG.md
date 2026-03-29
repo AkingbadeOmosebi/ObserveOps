@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/AkingbadeOmosebi/ObserveOps/compare/v1.1.0...v1.1.1) (2026-03-29)
+
+
+### Bug Fixes
+
+* converted GHA env name to lowercase ([8af60b6](https://github.com/AkingbadeOmosebi/ObserveOps/commit/8af60b623754ff1034c980727e1c9e388827f3f3))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
