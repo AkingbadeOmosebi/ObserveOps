@@ -3,7 +3,7 @@ import './App.css';
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_URL = process.env.REACT_APP_API_URL || '';
 
 function App() {
   const [sessionId, setSessionId] = useState(localStorage.getItem('sessionId'));
@@ -18,7 +18,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${API_URL}/api/auth/logout`, {
+      await fetch(`${API_URL}/api/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionId }),
