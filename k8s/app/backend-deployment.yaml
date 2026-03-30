@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: observeops/backend:latest
+          image: ghcr.io/akingbadeomosebi/observeops-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3001
