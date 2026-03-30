@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: payment-api-alerts
+  namespace: observability
+  labels:
+    release: prometheus
+spec:
+  groups:
+    - name: payment-api
+      interval: 30s
+      rules:
+        - alert: HighFailureRate
+          expr: rate(payment_transfers_total{status="failed"}[5m]) > 0
+          for: 1m
+          labels:
+            severity: critical
+            service: payment-api
+          annotations:
+            summary: "High failure rate detected in payment API"
+            description: "Payment API is experiencing {{ $value }} failed transfers per second"
+
+        - alert: PaymentAPIDown
+          expr: up{job="backend-monitor"} == 0
+          for: 2m
+          labels:
+            severity: critical
+            service: payment-api
+          annotations:
+            summary: "Payment API is down"
+            description: "Payment API has been unavailable for more than 2 minutes"
+
+        - alert: HighRequestLatency
+          expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+          for: 5m
+          labels:
+            severity: warning
+            service: payment-api
+          annotations:
+            summary: "High request latency detected"
+            description: "95th percentile request latency is {{ $value }}s"

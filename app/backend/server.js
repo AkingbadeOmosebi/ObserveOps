@@ -34,6 +34,14 @@ const sdk = new NodeSDK({
 sdk.start();
 console.log('✅ OpenTelemetry tracing initialized');
 
+// Force flush traces on shutdown
+process.on('SIGTERM', async () => {
+  console.log('⚠️  SIGTERM received, flushing traces...');
+  await sdk.shutdown(); // This flushes pending traces
+  await redisClient.quit();
+  process.exit(0);
+});
+
 // ============================================================================
 // PROMETHEUS METRICS SETUP
 // ============================================================================
