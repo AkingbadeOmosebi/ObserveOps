@@ -22,6 +22,23 @@ resource "aws_eks_cluster" "main" {
   }
 }
 
+# Add after the EKS cluster resource
+resource "aws_eks_access_entry" "admin_user" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::194722436853:user/Ak_DevOps"
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "admin_policy" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::194722436853:user/Ak_DevOps"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
 resource "aws_iam_role" "cluster" {
   name = "${var.cluster_name}-cluster-role"
 
