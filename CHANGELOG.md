@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/AkingbadeOmosebi/ObserveOps/compare/v1.1.1...v1.1.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* infra user permission" ([86ea837](https://github.com/AkingbadeOmosebi/ObserveOps/commit/86ea837a231055a973ee5a1af2d1b492cc74de6c))
+* updated frontend-app ([615aa2c](https://github.com/AkingbadeOmosebi/ObserveOps/commit/615aa2c7cbd71e9779a3820482151244126088f1))
+
 ## [1.1.1](https://github.com/AkingbadeOmosebi/ObserveOps/compare/v1.1.0...v1.1.1) (2026-03-29)
 
 

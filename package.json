@@ -1,6 +1,6 @@
 {
   "name": "observeops",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Full-stack observability platform for payment processing with distributed tracing",
   "repository": {
     "type": "git",
