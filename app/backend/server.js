@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 // ============================================================================
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
-const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 
@@ -19,12 +19,11 @@ const sdk = new NodeSDK({
     [SemanticResourceAttributes.SERVICE_NAME]: 'payment-api',
     [SemanticResourceAttributes.SERVICE_VERSION]: '1.0.0',
   }),
-  traceExporter: new JaegerExporter({
-    endpoint: process.env.JAEGER_ENDPOINT || 'http://jaeger.observability.svc.cluster.local:14268/api/traces',
+  traceExporter: new OTLPTraceExporter({
+    url: process.env.JAEGER_ENDPOINT || 'http://jaeger.observability.svc.cluster.local:4318/v1/traces',
   }),
   instrumentations: [
     getNodeAutoInstrumentations({
-      // Auto-instrument Express, HTTP, Redis
       '@opentelemetry/instrumentation-express': { enabled: true },
       '@opentelemetry/instrumentation-http': { enabled: true },
       '@opentelemetry/instrumentation-redis-4': { enabled: true },

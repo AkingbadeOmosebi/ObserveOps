@@ -16,7 +16,7 @@
     "@opentelemetry/api": "^1.6.0",
     "@opentelemetry/sdk-node": "^0.43.0",
     "@opentelemetry/auto-instrumentations-node": "^0.39.4",
-    "@opentelemetry/exporter-jaeger": "^1.17.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.43.0",
     "@opentelemetry/resources": "^1.17.0",
     "@opentelemetry/semantic-conventions": "^1.17.0",
     "prom-client": "^15.0.0"
