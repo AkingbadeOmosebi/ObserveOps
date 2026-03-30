@@ -152,7 +152,7 @@ app.use((req, res, next) => {
 // ============================================================================
 
 // Login
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -195,7 +195,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Logout
-app.post('/api/auth/logout', async (req, res) => {
+app.post('/api/logout', async (req, res) => {
   const { sessionId } = req.body;
 
   try {
