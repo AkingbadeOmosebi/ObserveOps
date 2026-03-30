@@ -20,7 +20,7 @@ const sdk = new NodeSDK({
     [SemanticResourceAttributes.SERVICE_VERSION]: '1.0.0',
   }),
   traceExporter: new JaegerExporter({
-    endpoint: process.env.JAEGER_ENDPOINT || 'http://jaeger-collector.tracing.svc.cluster.local:14268/api/traces',
+    endpoint: process.env.JAEGER_ENDPOINT || 'http://jaeger.observability.svc.cluster.local:14268/api/traces',
   }),
   instrumentations: [
     getNodeAutoInstrumentations({
