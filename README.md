@@ -20,37 +20,10 @@ ObserveOps is a full-stack observability platform showcasing enterprise-grade Si
 ---
 
 ## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    AWS EKS Cluster (eu-central-1)           │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐   │
-│  │   Frontend   │───▶│   Backend    │───▶│    Redis    │   │
-│  │  (React UI)  │    │  (Node.js)   │    │   (Cache)    │   │
-│  └──────────────┘    └──────────────┘    └──────────────┘   │
-│         │                    │                              │
-│         └────────────────────┴──────────────┐               │
-│                                              ▼              │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │         Observability Stack (3 Pillars)             │    │
-│  ├─────────────────────────────────────────────────────┤    │
-│  │  📊 Metrics: Prometheus + Grafana                   │    │
-│  │  📝 Logs: Fluent Bit + Elasticsearch + Kibana       │    │
-│  │  🔍 Traces: Jaeger + OpenTelemetry                  │    │
-│  │  🚨 Alerts: Alertmanager + Email Notifications      │    │
-│  └─────────────────────────────────────────────────────┘    │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-        ┌────────────────────────────────────┐
-        │   Security Pipeline (6 Layers)     │
-        ├────────────────────────────────────┤
-        │  GitLeaks │ OWASP │ Trivy          │
-        │  SonarCloud │ Snyk │ Cosign        │
-        └────────────────────────────────────┘
+   
+   ![ObserveOps Architecture](docs/architecture/observeops-architecture.png)
+   
+   *Production-grade observability platform on AWS EKS with VPC isolation, OIDC federation, and comprehensive monitoring*
 ```
 
 ---
@@ -154,30 +127,227 @@ ObserveOps is a full-stack observability platform showcasing enterprise-grade Si
 
 ## 📸 Screenshots
 
-### **Grafana Dashboard - Payment Metrics**
-![Grafana Dashboard](docs/screenshots/grafana-dashboard.png)
-*Real-time business KPIs: transfer rates, active sessions, latency percentiles*
+### **Infrastructure**
 
-### **Kibana - Centralized Logs**
-![Kibana Logs](docs/screenshots/kibana-logs.png)
-*Structured log aggregation from all services with filtering and search*
+#### **AWS EKS Cluster**
+![EKS Cluster Overview](docs/screenshots/observeops-eks-cluster.png)
+*Production EKS cluster running in eu-central-1 with Kubernetes 1.31*
 
-### **Prometheus - Alert Rules Firing**
-![Prometheus Alerts](docs/screenshots/prometheus-alerts.png)
-*Active alert monitoring with HighFailureRate detection*
+#### **EKS Node Groups**
+![EKS Nodes](docs/screenshots/observeops-eks-cluster-nodes.png)
+*Multi-AZ deployment with t3.medium instances across availability zones*
 
-### **Email Alert Notification**
+#### **EC2 Instances**
+![EC2 Instances](docs/screenshots/eks-instances.png)
+*Worker nodes running application and observability workloads*
+
+---
+
+### **Kubernetes Resources**
+
+#### **Cluster Nodes**
+![kubectl get nodes](docs/screenshots/kubectl-get-nodes.png)
+*Healthy EKS nodes with Ready status*
+
+#### **Application Pods**
+![App Namespace Pods](docs/screenshots/kubectl-get-pods-namespace-app.png)
+*Backend, frontend, and Redis pods running in app namespace*
+
+#### **Observability Pods**
+![Observability Namespace Pods](docs/screenshots/kubectl-get-pods-namespace-observability.png)
+*Prometheus, Grafana, Alertmanager, Jaeger, and EFK stack running*
+
+#### **Application Services**
+![App Services](docs/screenshots/kubectl-get-svc-namespace-app.png)
+*LoadBalancer and ClusterIP services exposing frontend and backend*
+
+#### **Observability Services**
+![Observability Services](docs/screenshots/kubectl-get-svc-namespace-observability.png)
+*Monitoring and logging services with port configurations*
+
+#### **PrometheusRule - Alert Definitions**
+![PrometheusRule YAML](docs/screenshots/kubectl-get-prometheusrule-namespace-observability-payment-api-alerts.png)
+*Custom alert rules for HighFailureRate, PaymentAPIDown, and HighRequestLatency*
+
+---
+
+### **Grafana - Metrics & Dashboards**
+
+#### **Payment Transfers by Status**
+![Transfer Status Dashboard](docs/screenshots/Grafana-transfer-status.png)
+*Real-time visualization of successful vs failed payment transfers*
+
+#### **Payment Volume & Transfer Metrics**
+![Payments and Transfers](docs/screenshots/Grafana-payments-and-transfer.png)
+*Business KPIs showing transfer rates, total volume, and transaction patterns*
+
+#### **Active User Sessions**
+![Payment Sessions](docs/screenshots/Grafana-payment-sessions.png)
+*Live gauge showing active user sessions with authentication tracking*
+
+**Key Metrics Tracked:**
+- `payment_transfers_total{status="success|failed"}` - Transfer success/failure rates
+- `payment_active_sessions` - Concurrent user sessions
+- `http_request_duration_seconds` - API latency percentiles (p50, p95, p99)
+- `payment_transfer_amount` - Distribution of transaction amounts
+
+---
+
+### **Kibana - Centralized Logging**
+
+#### **Log Stream - All Services**
+![Kibana Logs Overview](docs/screenshots/kibana-logs.png)
+*Structured JSON logs from all pods with timestamp, method, path, and user agent*
+
+#### **Application Logs**
+![App Logs](docs/screenshots/kibana-log-app.png)
+*Application-level events including balance checks, transfers, and transactions*
+
+#### **Login Success Events**
+![Login Logs](docs/screenshots/kibana-logs-login-success.png)
+*Authentication events showing successful user logins with session IDs*
+
+#### **Transfer Success Events**
+![Transfer Logs](docs/screenshots/kibana-logs-transfer-success.png)
+*Payment transfer events with transaction IDs, amounts, and balance updates*
+
+#### **ObserveOps Dashboard**
+![Kibana Dashboard](docs/screenshots/kibana-observeops-dashboard.png)
+*Pre-configured dashboard with visualizations for log analysis and monitoring*
+
+**Log Sources:**
+- Backend API logs (authentication, transfers, balance checks)
+- Frontend access logs (requests, responses)
+- Redis connection logs
+- Kubernetes system logs
+
+---
+
+### **Prometheus - Alerting**
+
+#### **Alert Rules - HighFailureRate Firing**
+![Prometheus Alerts](docs/screenshots/prometheus-alert.png)
+*Active alert showing payment failures detected with FIRING status*
+
+#### **PromQL Query - Transfer Metrics**
+![PromQL Query](docs/screenshots/prometheus-promql-payment-transfers-total.png)
+*Real-time query showing payment_transfers_total metric by status label*
+
+**Alert Definitions:**
+- **HighFailureRate**: Triggers when `rate(payment_transfers_total{status="failed"}[5m]) > 0`
+- **PaymentAPIDown**: Fires when backend is unavailable for > 2 minutes
+- **HighRequestLatency**: Activates when p95 latency exceeds 2 seconds
+
+---
+
+### **Alertmanager - Incident Notifications**
+
+#### **Email Alert Configuration**
+![Alertmanager Alerts](docs/screenshots/alertmanager-email-alerts.png)
+*Alertmanager routing configuration showing email receiver setup*
+
+#### **Email Notification Received**
 ![Email Alert](docs/screenshots/email-alert.png)
-*Automated incident notifications with alert details and severity*
+*Production email alert sent to akingbadeomosebi@gmail.com with alert details, severity, and firing time*
 
-### **Application - Payment Processing**
-![App Demo](docs/screenshots/app-demo.png)
-*Frontend interface for money transfers with real-time balance updates*
+**Alert Routing:**
+- **Critical alerts**: Repeat every 5 minutes until resolved
+- **Warning alerts**: Repeat every 15 minutes
+- **Email delivery**: < 1 minute from detection to inbox
+- **Alert grouping**: By namespace and alertname to reduce noise
+
+---
 
 ### **Jaeger - Distributed Tracing**
-![Jaeger Traces](docs/screenshots/jaeger-traces.png)
-*Service dependency mapping and trace visualization*
 
+#### **Service Traces Overview**
+![Jaeger Service Traces](docs/screenshots/jaeger-service-traces.png)
+*Distributed trace visualization showing request flow through services*
+
+#### **Trace Timeline**
+![Jaeger Traces](docs/screenshots/jaeger-traces.png)
+*Span timeline showing request latency breakdown across service calls*
+
+#### **Trace Chart**
+![Jaeger Trace Chart](docs/screenshots/jaeger-traces-chart.png)
+*Visual representation of service dependencies and trace relationships*
+
+**Tracing Implementation:**
+- OpenTelemetry SDK instrumentation in Node.js backend
+- Auto-instrumentation for Express, HTTP, Redis clients
+- OTLP protocol export to Jaeger collector
+- Service name: `payment-api`
+- Trace sampling configured for production workloads
+
+---
+
+### **Application - Payment Processing UI**
+
+#### **Login Interface**
+![Login Form](docs/screenshots/observeops-login-form.png)
+*User authentication with username/password and session management*
+
+#### **User Dashboard - Akingbade**
+![User Akingbade](docs/screenshots/observeops-user-akingbade.png)
+*Account balance, transaction history, and transfer interface for user Akingbade*
+
+#### **User Dashboard - Omosebi**
+![User Omosebi](docs/screenshots/observeops-user-omosebi.png)
+*Real-time balance updates and recent transactions for user Omosebi*
+
+#### **User Dashboard - Kelvin**
+![User Kelvin](docs/screenshots/observeops-user-kelvin.png)
+*Transfer interface with recipient selection and amount input*
+
+#### **Alert Trigger Test**
+![Trigger Alert](docs/screenshots/observeops-trigger.png)
+*Manual alert trigger via `/api/fail` endpoint for testing incident response flow*
+
+**Application Features:**
+- Session-based authentication with Redis
+- Real-time balance updates
+- Transfer validation (insufficient funds check)
+- Transaction history (last 10 transactions)
+- Bcrypt password hashing
+- Structured JSON logging for all events
+
+---
+
+### **Demo Users**
+
+The application includes three demo users for testing:
+
+| Username | Password | Initial Balance |
+|----------|----------|----------------|
+| Akingbade | moneyman123 | €50,000.00 |
+| Omosebi | moneytalks123 | €13,000.00 |
+| Kelvin | brokie123 | €1,500.00 |
+
+---
+
+## 🔍 What The Screenshots Demonstrate
+
+### **Production Readiness:**
+✅ Real AWS infrastructure running (not local Docker)  
+✅ Multi-pod deployment with high availability  
+✅ Working observability across all three pillars  
+✅ End-to-end incident response (detection → alert → email)  
+
+### **Technical Depth:**
+✅ Kubernetes resource management (pods, services, namespaces)  
+✅ Prometheus metric collection with custom business KPIs  
+✅ Structured logging with Fluent Bit → Elasticsearch → Kibana  
+✅ Distributed tracing with OpenTelemetry instrumentation  
+
+### **Operational Excellence:**
+✅ Alert rules firing on actual failure conditions  
+✅ Email notifications delivered automatically  
+✅ Dashboards showing real-time data  
+✅ Full request tracing from frontend to backend  
+
+---
+
+**All screenshots captured from live system running on AWS EKS in eu-central-1 region.**
 ---
 
 ## 🚀 Getting Started
